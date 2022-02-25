@@ -4,7 +4,7 @@
 String output1, output2; 
 float calibration = 10000;
 float Vout;
-
+int minutes = 0;
 void setup() {
   // put your setup code here, to run once:
   Heltec.begin(true /*DisplayEnable Enable*/, false /*LoRa Disable*/, true /*Serial Enable*/);
@@ -26,7 +26,6 @@ void loop() {
       output1 = calculateScore();
       output2 = calculateVolts();
 
-    Serial.println(output1);
     Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
     Heltec.display->setFont(ArialMT_Plain_24);
     Heltec.display->drawString(0, 12, output1);
@@ -37,8 +36,13 @@ void loop() {
     Heltec.display->setFont(ArialMT_Plain_24);
     Heltec.display->drawString(0, 36, output2);
     Heltec.display->display();
-    delay(1000);
-
+    delay(60000);// Every Minute
+    minutes++;
+    if(minutes >= 60)
+    {
+        Serial.println(output1);
+        minutes = 0;
+    }
 }
 
 
