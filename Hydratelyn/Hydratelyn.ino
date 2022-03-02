@@ -2,17 +2,13 @@
 #include "heltec.h"
 #include "String.h"
 String output1, output2; 
-float calibration = 10000;
 float Vout;
-int minutes = 0;
 void setup() {
   // put your setup code here, to run once:
   Heltec.begin(true /*DisplayEnable Enable*/, false /*LoRa Disable*/, true /*Serial Enable*/);
   Heltec.display->flipScreenVertically();
   Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
   Heltec.display->setFont(ArialMT_Plain_10);
-
-
 }
 
 void loop() {
@@ -28,24 +24,17 @@ void loop() {
 
     Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
     Heltec.display->setFont(ArialMT_Plain_24);
-    Heltec.display->drawString(0, 12, output1);
+    Heltec.display->drawString(0, 12, output1); // Score
     Heltec.display->display();
 
     //Display resistance
     Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
     Heltec.display->setFont(ArialMT_Plain_24);
-    Heltec.display->drawString(0, 36, output2);
+    Heltec.display->drawString(0, 36, output2);// volts
     Heltec.display->display();
-    delay(60000);// Every Minute
-    minutes++;
-    if(minutes >= 60)
-    {
-        Serial.println(output1);
-        minutes = 0;
-    }
+    delay(1000);// Every Second
+    Serial.println(output2);
 }
-
-
 
 int calculateVolts()
 {
@@ -60,9 +49,10 @@ int calculateVolts()
   float R2 = 1000000;
   int R1 = (Vin/Vout * R2) - R2; // derived from resistor divider equation
 
-  return R1;
+  return Vout;
 }
-float calculateScore()
+
+int calculateScore()
 {
   float sum = 0;
   for(int i = 0; i < 100; i++)
@@ -73,7 +63,7 @@ float calculateScore()
   Vout = sum/100 /4096.0 * 3.3;
   float Vin = 3.3;
   float R2 = 1000000;
-  float R1 = (Vin/Vout * R2) - R2; // derived from resistor divider equation
+  int R1 = (Vin/Vout * R2) - R2; // derived from resistor divider equation
 
-  return Vout;
+  return R1;
 }
