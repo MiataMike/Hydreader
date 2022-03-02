@@ -33,10 +33,10 @@ void loop() {
     Heltec.display->drawString(0, 36, output2);// volts
     Heltec.display->display();
     delay(1000);// Every Second
-    Serial.println(output2);
+    Serial.println(output1);
 }
 
-int calculateVolts()
+float calculateVolts()
 {
   float sum = 0;
   for(int i = 0; i < 100; i++)
