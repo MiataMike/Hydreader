@@ -9,8 +9,8 @@ mpl.use('Agg')
 print("Hello World!")
 with serial.Serial('/dev/ttyUSB0', timeout = 10, baudrate=115200) as ser:  # open serial port
     ser.write(b's')#send command to output data
-    encodedData = ser.readline()
-    greenhouseData = encodedData.decode() #translate bytes to string
+    x = ser.readline()
+    y = x.decode() #translate bytes to string
     #z = y[:-2] #removes last two characters, in this case, /r/n
     print(y)
     ser.close()
@@ -20,7 +20,7 @@ timestamp = time.time()
 try:
     with open('cloverLog.csv', 'a', newline='')as csvfile:
         append2file = csv.writer(csvfile, delimiter=',')
-        append2file.writerow([timestamp,greenhouseData])
+        append2file.writerow([timestamp,z])
 except Exception as e:
     print(e)
 
