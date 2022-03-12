@@ -1,6 +1,16 @@
 #include "Arduino.h"
 #include "heltec.h"
 #include "String.h"
+#include "DHT.h"
+
+#define DHTPIN 5
+#define DHTTYPE DHT11
+DHT dhtsensor = DHT(DHTPIN, DHTTYPE);
+float h = 0;
+float t = 0;
+
+#define hydraPin 4
+int incomingByte = 0;
 String output1, output2; 
 float Vout;
 void setup() {
@@ -9,6 +19,10 @@ void setup() {
   Heltec.display->flipScreenVertically();
   Heltec.display->setTextAlignment(TEXT_ALIGN_LEFT);
   Heltec.display->setFont(ArialMT_Plain_10);
+  ledcSetup(0,1000, 8);
+  ledcAttachPin(0,0);
+  ledcWrite(0,255);
+  dhtsensor.begin();
 }
 
 void loop() {
@@ -16,7 +30,13 @@ void loop() {
     // Font Demo1
     // create more fonts at http://oleddisplay.squix.ch/
     Heltec.display->clear();
-
+    // Reading temperature or humidity takes about 250 milliseconds!
+    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    h = dhtsensor.readHumidity();
+    delay(500);
+    // Read temperature as Celsius (the default)
+    t = dhtsensor.readTemperature();
+    delay(500);
       Heltec.display->setFont(ArialMT_Plain_10);
       Heltec.display->drawString(0,0,"Howdy!");
       output1 = calculateScore();
@@ -32,8 +52,22 @@ void loop() {
     Heltec.display->setFont(ArialMT_Plain_24);
     Heltec.display->drawString(0, 36, output2);// volts
     Heltec.display->display();
-    delay(1000);// Every Second
-    Serial.println(output1);
+    if (Serial.available() > 0) 
+    {
+    // read the incoming byte:
+    incomingByte = Serial.read();
+    }
+    else {incomingByte = 0;}
+
+    if(incomingByte == 115) // letter 's'
+    {
+      Serial.print(t);
+      Serial.print(",");
+      Serial.print(h);
+      Serial.print(",");
+      Serial.println(output1);
+    }
+
 }
 
 float calculateVolts()
@@ -41,7 +75,7 @@ float calculateVolts()
   float sum = 0;
   for(int i = 0; i < 100; i++)
   {
-    sum += analogRead(2); // oversampling 100 times
+    sum += analogRead(hydraPin); // oversampling 100 times
   }
   
   Vout = sum/100 /4096.0 * 3.3;
@@ -57,7 +91,7 @@ int calculateScore()
   float sum = 0;
   for(int i = 0; i < 100; i++)
   {
-    sum += analogRead(2); // oversampling 100 times
+    sum += analogRead(hydraPin); // oversampling 100 times
   }
   
   Vout = sum/100 /4096.0 * 3.3;
