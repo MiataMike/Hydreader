@@ -22,6 +22,8 @@ void setup() {
   ledcSetup(0,1000, 8);
   ledcAttachPin(0,0);
   ledcWrite(0,255);
+  pinMode(16, OUTPUT);
+  digitalWrite(16, LOW);
   dhtsensor.begin();
 }
 
@@ -66,6 +68,16 @@ void loop() {
       Serial.print(h);
       Serial.print(",");
       Serial.println(output1);
+    }
+    if(incomingByte == 116) // letter 't'
+    {
+      digitalWrite(16, HIGH);
+      Serial.println("Hydroponic pump activated");
+    }
+    if(incomingByte == 117)
+    {
+      digitalWrite(16, LOW);
+      Serial.println("Hydroponic pump de-activated");
     }
 
 }
