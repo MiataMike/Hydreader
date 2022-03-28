@@ -39,7 +39,7 @@ with open('cloverLog.csv', newline='') as csvfile:
         resData.append(int(row[1]))
         tempData.append(float(row[2]))
         humiData.append(float(row[3]))
-
+#    plt.ylim(100000,6000000)
     plt.xticks( rotation=25 )
     plt.ylabel('Ohms')
 #    plt.style.use('dark_background')
@@ -48,7 +48,7 @@ with open('cloverLog.csv', newline='') as csvfile:
     ax=plt.gca()
     ax.xaxis.set_major_formatter(xfmt)
     plt.title('Soil Resistance')
-    plt.plot(x[-1400:],resData[-1400:],'g')
+    plt.plot(x[-500:],resData[-500:],'g')
     plt.savefig('cloverPlot.png')
     plt.clf()
 
@@ -60,7 +60,7 @@ with open('cloverLog.csv', newline='') as csvfile:
     ax=plt.gca()
     ax.xaxis.set_major_formatter(xfmt)
     plt.title('Humidity')
-    plt.plot(x[-1400:],humiData[-1400:],'g')
+    plt.plot(x[-500:],humiData[-500:],'g')
     plt.savefig('humiPlot.png')
     plt.clf()
 
@@ -72,7 +72,7 @@ with open('cloverLog.csv', newline='') as csvfile:
     ax=plt.gca()
     ax.xaxis.set_major_formatter(xfmt)
     plt.title('Temperature')
-    plt.plot(x[-1400:],tempData[-1400:],'g')
+    plt.plot(x[-500:],tempData[-500:],'g')
     plt.savefig('tempPlot.png')
 
 
